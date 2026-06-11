@@ -3,6 +3,8 @@ package com.tapan.aetherai
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import com.tapan.aetherai.core.designsystem.theme.AetherTheme
+import com.tapan.aetherai.presentation.navigation.AetherNavGraph
 
 class MainActivity : ComponentActivity() {
 
@@ -10,7 +12,9 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-
+            AetherTheme {
+                AetherNavGraph()
+            }
         }
     }
 }
