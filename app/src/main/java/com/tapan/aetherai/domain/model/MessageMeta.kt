@@ -1,4 +1,7 @@
 package com.tapan.aetherai.domain.model
 
-class MessageMeta {
-}
+data class MessageMeta(
+    val isEdited: Boolean = false,
+    val retryCount: Int = 0,
+    val sentiment: String? = null
+)

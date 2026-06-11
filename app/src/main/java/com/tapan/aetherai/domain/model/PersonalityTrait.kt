@@ -1,4 +1,15 @@
 package com.tapan.aetherai.domain.model
 
-class PersonalityTrait {
+
+enum class PersonalityTrait {
+    ANALYTICAL,
+    CREATIVE,
+    FRIENDLY,
+    CURIOUS,
+    CALM,
+    HUMOROUS,
+    EMPATHETIC,
+    CONFIDENT,
+    ADVENTUROUS,
+    ORGANIZED
 }
