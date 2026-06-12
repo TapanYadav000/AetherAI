@@ -74,7 +74,7 @@ dependencies {
 
     ksp(libs.room.compiler)
 
-//implementation(libs.datastore.preferences)
+    implementation(libs.datastore.preferences)
 //    implementation(libs.androidx.activity.compose)
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)
