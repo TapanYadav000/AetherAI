@@ -57,6 +57,7 @@ dependencies {
     implementation(libs.bundles.compose)
 
     implementation(libs.material3)
+    implementation(libs.material)
 
     implementation(libs.navigation.compose)
 
@@ -73,8 +74,8 @@ dependencies {
 
     ksp(libs.room.compiler)
 
-    implementation(libs.datastore.preferences)
-
+//implementation(libs.datastore.preferences)
+//    implementation(libs.androidx.activity.compose)
     implementation(libs.work.runtime.ktx)
     implementation(libs.hilt.work)
 
