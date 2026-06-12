@@ -19,4 +19,14 @@ class UserRepositoryImpl @Inject constructor(
     override fun getUserProfile(): Flow<UserProfile> {
         return dataStore.getUserProfile()
     }
+
+    override suspend fun updateUserProfile(
+        name: String,
+        age: Int
+    ) {
+        dataStore.updateUserProfile(
+            name = name,
+            age = age
+        )
+    }
 }

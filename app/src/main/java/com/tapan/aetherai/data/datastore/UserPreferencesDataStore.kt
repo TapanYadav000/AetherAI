@@ -54,7 +54,18 @@ class UserPreferencesDataStore(
                 ).toString()
         }
     }
+    suspend fun updateUserProfile(
+        name: String,
+        age: Int
+    ) {
 
+        context.userDataStore.edit { preferences ->
+
+            preferences[NAME] = name
+
+            preferences[AGE] = age.toString()
+        }
+    }
     fun getUserProfile(): Flow<UserProfile> {
 
         return context.userDataStore.data.map { preferences ->

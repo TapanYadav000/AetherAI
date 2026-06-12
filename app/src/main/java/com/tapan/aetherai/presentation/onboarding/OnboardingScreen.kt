@@ -5,11 +5,14 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tapan.aetherai.presentation.onboarding.page.*
 
 @Composable
-fun OnboardingScreen() {
+fun OnboardingScreen(
+    onNavigateToHome: () -> Unit
+){
 
     var isUserInfoValid by remember {
         mutableStateOf(false)
@@ -17,7 +20,7 @@ fun OnboardingScreen() {
     var isTraitSelectionValid by remember {
         mutableStateOf(false)
     }
-    val viewModel: OnboardingViewModel = viewModel()
+    val viewModel: OnboardingViewModel = hiltViewModel()
 
     val state by viewModel.state.collectAsState()
 
@@ -53,7 +56,12 @@ fun OnboardingScreen() {
 
             Button(
                 onClick = {
-                    viewModel.nextPage()
+
+                    if(state.currentPage < 2) {
+                        viewModel.nextPage()
+                    } else {
+                        viewModel.finishOnboarding()
+                    }
                 },
                 enabled = when (state.currentPage) {
 
@@ -73,6 +81,18 @@ fun OnboardingScreen() {
                         "Next"
                 )
             }
+            if(state.isCompleted) {
+
+                Text(
+                    text = "Profile Saved Successfully"
+                )
+            }
+        }
+    }
+    LaunchedEffect(state.isCompleted) {
+
+        if (state.isCompleted) {
+            onNavigateToHome()
         }
     }
 }

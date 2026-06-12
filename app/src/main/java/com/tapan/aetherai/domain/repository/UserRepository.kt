@@ -9,5 +9,10 @@ interface UserRepository {
         profile: UserProfile
     )
 
+    suspend fun updateUserProfile(
+        name: String,
+        age: Int
+    )
+
     fun getUserProfile(): Flow<UserProfile>
 }

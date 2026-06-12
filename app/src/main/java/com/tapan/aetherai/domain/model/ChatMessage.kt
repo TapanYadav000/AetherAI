@@ -1,5 +1,6 @@
 package com.tapan.aetherai.domain.model
 
+
 data class ChatMessage(
     val id: String,
     val sender: MessageSender,

@@ -73,6 +73,7 @@ dependencies {
     implementation(libs.room.ktx)
 
     ksp(libs.room.compiler)
+    implementation(libs.room.paging)
 
     implementation(libs.datastore.preferences)
 //    implementation(libs.androidx.activity.compose)
@@ -98,4 +99,7 @@ dependencies {
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.espresso.core)
+    testImplementation(libs.junit)
+    testImplementation(libs.coroutines.test)
+    testImplementation(libs.mockk)
 }

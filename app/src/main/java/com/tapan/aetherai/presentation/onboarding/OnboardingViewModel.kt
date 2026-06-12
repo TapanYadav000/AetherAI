@@ -1,14 +1,22 @@
 package com.tapan.aetherai.presentation.onboarding
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.tapan.aetherai.domain.model.PersonalityTrait
+import com.tapan.aetherai.domain.model.UserProfile
+import com.tapan.aetherai.domain.repository.UserRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class OnboardingViewModel : ViewModel() {
-
+@HiltViewModel
+class OnboardingViewModel @Inject constructor(
+    private val userRepository: UserRepository
+) : ViewModel() {
     private val _state = MutableStateFlow(OnboardingState())
 
     val state: StateFlow<OnboardingState> =
@@ -77,9 +85,26 @@ class OnboardingViewModel : ViewModel() {
             else ->
                 current
         }
-
         _state.update {
             it.copy(selectedTraits = updated)
+        }
+    }
+    fun finishOnboarding() {
+
+        viewModelScope.launch {
+
+            val profile = UserProfile(
+                name = _state.value.name,
+                age = _state.value.age.toIntOrNull() ?: 0,
+                phoneNumber = _state.value.phoneNumber,
+                personalityTraits = _state.value.selectedTraits.toList()
+            )
+
+            userRepository.saveUserProfile(profile)
+
+            _state.update {
+                it.copy(isCompleted = true)
+            }
         }
     }
 }

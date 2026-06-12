@@ -1,6 +1,8 @@
 package com.tapan.aetherai.di
 
 import com.tapan.aetherai.data.repository.UserRepositoryImpl
+import com.tapan.aetherai.domain.repository.ChatRepository
+import com.tapan.aetherai.domain.repository.ChatRepositoryImpl
 import com.tapan.aetherai.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
@@ -17,4 +19,10 @@ abstract class RepositoryModule {
     abstract fun bindUserRepository(
         repositoryImpl: UserRepositoryImpl
     ): UserRepository
+
+    @Binds
+    abstract fun bindChatRepository(
+        repositoryImpl: ChatRepositoryImpl
+    ): ChatRepository
+
 }
