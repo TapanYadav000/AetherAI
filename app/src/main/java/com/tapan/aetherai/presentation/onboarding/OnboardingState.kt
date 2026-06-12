@@ -14,6 +14,8 @@ data class OnboardingState(
 
     val otp: String = "",
 
+    val otpVerified: Boolean = false,
+
     val selectedTraits: Set<PersonalityTrait> = emptySet(),
 
     val isLoading: Boolean = false,

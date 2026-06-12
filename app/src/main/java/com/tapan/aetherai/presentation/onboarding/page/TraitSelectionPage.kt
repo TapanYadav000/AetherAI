@@ -7,9 +7,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.tapan.aetherai.domain.model.PersonalityTrait
+import com.tapan.aetherai.presentation.onboarding.OnboardingState
+import com.tapan.aetherai.presentation.onboarding.OnboardingViewModel
 
 @Composable
 fun TraitSelectionPage(
+    state: OnboardingState,
+    viewModel: OnboardingViewModel,
     onValidationChanged: (Boolean) -> Unit
 ) {
 

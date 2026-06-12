@@ -6,16 +6,16 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.tapan.aetherai.presentation.onboarding.OnboardingState
+import com.tapan.aetherai.presentation.onboarding.OnboardingViewModel
 
 @Composable
 fun UserInfoPage(
+    state: OnboardingState,
+    viewModel: OnboardingViewModel,
     onValidationChanged: (Boolean) -> Unit
 ) {
 
-    var name by remember { mutableStateOf("") }
-    var age by remember { mutableStateOf("") }
-    var phone by remember { mutableStateOf("") }
-    var otp by remember { mutableStateOf("") }
 
     var otpRequested by remember { mutableStateOf(false) }
     var otpVerified by remember { mutableStateOf(false) }
@@ -35,8 +35,8 @@ fun UserInfoPage(
         Spacer(modifier = Modifier.height(24.dp))
 
         OutlinedTextField(
-            value = name,
-            onValueChange = { name = it },
+            value = state.name,
+            onValueChange = viewModel::updateName,
             label = { Text("Name") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -44,8 +44,8 @@ fun UserInfoPage(
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = age,
-            onValueChange = { age = it },
+            value = state.age,
+            onValueChange = viewModel::updateAge,
             label = { Text("Age") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -53,8 +53,8 @@ fun UserInfoPage(
         Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = phone,
-            onValueChange = { phone = it },
+            value = state.phoneNumber,
+            onValueChange = viewModel::updatePhone,
             label = { Text("Phone Number") },
             modifier = Modifier.fillMaxWidth()
         )
@@ -65,7 +65,7 @@ fun UserInfoPage(
             onClick = {
                 otpRequested = true
             },
-            enabled = phone.length == 10,
+            enabled = state.phoneNumber.length == 10,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Send OTP")
@@ -87,8 +87,8 @@ fun UserInfoPage(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 OutlinedTextField(
-                    value = otp,
-                    onValueChange = { otp = it },
+                    value = state.otp,
+                    onValueChange = viewModel::updateOtp,
                     label = { Text("Enter OTP") },
                     modifier = Modifier.fillMaxWidth()
                 )
@@ -97,7 +97,9 @@ fun UserInfoPage(
 
                 Button(
                     onClick = {
-                        otpVerified = otp == "1234"
+                        viewModel.updateOtpVerified(
+                            state.otp == "1234"
+                        )
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -106,7 +108,7 @@ fun UserInfoPage(
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                if (otpVerified) {
+                if (state.otpVerified) {
 
                     Text(
                         text = "✓ Phone Number Verified",
@@ -116,17 +118,14 @@ fun UserInfoPage(
             }
         }
     }
-    LaunchedEffect(
-        name,
-        age,
-        phone,
-        otpVerified
-    ) {
+    LaunchedEffect(state) {
+
         onValidationChanged(
-            name.isNotBlank() &&
-                    age.isNotBlank() &&
-                    phone.length == 10 &&
-                    otpVerified
+
+            state.name.isNotBlank() &&
+                    state.age.isNotBlank() &&
+                    state.phoneNumber.length == 10 &&
+                    state.otpVerified
         )
     }
 }

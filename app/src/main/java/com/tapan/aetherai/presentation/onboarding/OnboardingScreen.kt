@@ -5,20 +5,22 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.tapan.aetherai.presentation.onboarding.page.*
 
 @Composable
 fun OnboardingScreen() {
 
-    var page by remember {
-        mutableIntStateOf(0)
-    }
     var isUserInfoValid by remember {
         mutableStateOf(false)
     }
     var isTraitSelectionValid by remember {
         mutableStateOf(false)
     }
+    val viewModel: OnboardingViewModel = viewModel()
+
+    val state by viewModel.state.collectAsState()
+
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -28,45 +30,49 @@ fun OnboardingScreen() {
             modifier = Modifier.weight(1f)
         ) {
 
-            when(page) {
+            when (state.currentPage) {
 
                 0 -> WelcomePage()
 
                 1 -> UserInfoPage(
+                    state = state,
+                    viewModel = viewModel,
                     onValidationChanged = {
                         isUserInfoValid = it
                     }
                 )
 
                 2 -> TraitSelectionPage(
+                    state = state,
+                    viewModel = viewModel,
                     onValidationChanged = {
                         isTraitSelectionValid = it
                     }
                 )
             }
-        }
 
-        Button(
-            onClick = {
-                if(page < 2) page++
-            },
-            enabled = when(page) {
+            Button(
+                onClick = {
+                    viewModel.nextPage()
+                },
+                enabled = when (state.currentPage) {
 
-                0 -> true
+                    0 -> true
 
-                1 -> isUserInfoValid
+                    1 -> isUserInfoValid
 
-                2 -> isTraitSelectionValid
+                    2 -> isTraitSelectionValid
 
-                else -> false
-            }
-        ) {
-            Text(
-                text = when(page) {
-                    2 -> "Finish"
-                    else -> "Next"
+                    else -> false
                 }
-            )
+            ) {
+                Text(
+                    text = if (state.currentPage == 2)
+                        "Finish"
+                    else
+                        "Next"
+                )
+            }
         }
     }
 }
