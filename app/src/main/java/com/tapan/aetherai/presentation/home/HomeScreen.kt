@@ -15,13 +15,24 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -37,9 +48,21 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.tapan.aetherai.presentation.chat.ChatHistoryScreen
+import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.LightMode
+import androidx.compose.material.icons.filled.Mic
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Stop
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Surface
 
 @Composable
 fun HomeScreen(
+    darkTheme: Boolean,
+    onThemeToggle: () -> Unit,
     onEditProfileClick: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -93,7 +116,12 @@ fun HomeScreen(
     val profile = uiState.profile ?: return
 
     if (contentMode.value == HomeContentMode.AURA) {
-
+        Surface(
+            modifier = Modifier.fillMaxSize().windowInsetsPadding(
+                WindowInsets.statusBars
+            ),
+            color = MaterialTheme.colorScheme.background
+        ){
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -123,23 +151,43 @@ fun HomeScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            Text(
-                text = "Welcome ${profile.name}",
-                style = MaterialTheme.typography.headlineMedium
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+
+                Text(
+                    text = "Good Evening, ${profile.name}",
+                    style = MaterialTheme.typography.headlineMedium
+                )
+
+                Spacer(
+                    modifier = Modifier.height(8.dp)
+                )
+
+                Text(
+                    text = "How can I help today?",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
 
             Spacer(
                 modifier = Modifier.height(24.dp)
             )
 
 
-            AuraCircle(
-                state = if (amplitude > 0f) {
-                    AuraState.Listening(amplitude)
-                } else {
-                    AuraState.Idle
-                }
-            )
+            Box(
+                modifier = Modifier.size(280.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                AuraCircle(
+                    state = if (amplitude > 0f) {
+                        AuraState.Listening(amplitude)
+                    } else {
+                        AuraState.Idle
+                    }
+                )
+            }
 
 
             Spacer(
@@ -147,33 +195,44 @@ fun HomeScreen(
             )
 
             Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(24.dp)
             ) {
 
-                Button(
+                FilledIconButton(
                     onClick = {
                         permissionLauncher.launch(
                             Manifest.permission.RECORD_AUDIO
                         )
                     }
                 ) {
-                    Text("Mic")
+                    Icon(
+                        Icons.Default.Mic,
+                        contentDescription = null
+                    )
                 }
 
-                Button(
+                FilledIconButton(
                     onClick = {
                         viewModel.stopListening()
                     }
                 ) {
-                    Text("Stop")
+                    Icon(
+                        Icons.Default.Stop,
+                        contentDescription = null
+                    )
                 }
 
-                Button(
-                    onClick = {
-                        showInputPanel.value = !showInputPanel.value
-                    }
+                FilledIconButton(
+                    onClick = onThemeToggle
                 ) {
-                    Text("Keyboard")
+                    Icon(
+                        imageVector =
+                            if (darkTheme)
+                                Icons.Default.LightMode
+                            else
+                                Icons.Default.DarkMode,
+                        contentDescription = "Theme"
+                    )
                 }
             }
 
@@ -181,54 +240,42 @@ fun HomeScreen(
                 modifier = Modifier.height(24.dp)
             )
 
-            Card {
 
-                Column(
-                    modifier = Modifier.padding(16.dp)
-                ) {
-
-                    Text(
-                        text = "Your Profile",
-                        style = MaterialTheme.typography.titleLarge
-                    )
-
-                    Spacer(
-                        modifier = Modifier.height(12.dp)
-                    )
-
-                    Text(
-                        text = "Age: ${profile.age}"
-                    )
-
-                    Text(
-                        text = "Phone: ${profile.phoneNumber}"
-                    )
-                }
-            }
 
             Spacer(
                 modifier = Modifier.height(16.dp)
             )
 
-            Card {
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(28.dp),
+                tonalElevation = 4.dp
+            ) {
 
-                Column(
-                    modifier = Modifier.padding(16.dp)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    Text(
-                        text = "Personality Traits",
-                        style = MaterialTheme.typography.titleLarge
+                    OutlinedTextField(
+                        value = message.value,
+                        onValueChange = {
+                            message.value = it
+                        },
+                        modifier = Modifier.weight(1f),
+                        placeholder = {
+                            Text("Ask Aether AI...")
+                        }
                     )
 
-                    Spacer(
-                        modifier = Modifier.height(12.dp)
-                    )
-
-                    profile.personalityTraits.forEach { trait ->
-
-                        Text(
-                            text = "• ${trait.name}"
+                    IconButton(
+                        onClick = { }
+                    ) {
+                        Icon(
+                            Icons.Default.Send,
+                            contentDescription = null
                         )
                     }
                 }
@@ -238,10 +285,13 @@ fun HomeScreen(
                 modifier = Modifier.height(24.dp)
             )
 
-            Button(
+            IconButton(
                 onClick = onEditProfileClick
             ) {
-                Text("Edit Profile")
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = null
+                )
             }
 
             AnimatedVisibility(
@@ -255,7 +305,11 @@ fun HomeScreen(
             ) {
 
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp),
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 4.dp
+                    )
                 ) {
 
                     Column(
@@ -289,6 +343,8 @@ fun HomeScreen(
             }
         }
     }
+}
+
     AnimatedVisibility(
         visible =
             contentMode.value ==
@@ -299,16 +355,13 @@ fun HomeScreen(
 
         Column {
 
-            Button(
-                onClick = {
+
+            ChatHistoryScreen(
+                onBackClick = {
                     contentMode.value =
                         HomeContentMode.AURA
                 }
-            ) {
-                Text("Back")
-            }
-
-            ChatHistoryScreen()
+            )
         }
     }
 }

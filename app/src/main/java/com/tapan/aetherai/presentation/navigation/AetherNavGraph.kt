@@ -10,7 +10,10 @@ import com.tapan.aetherai.presentation.profile.EditProfileScreen
 import com.tapan.aetherai.presentation.startup.StartupScreen
 
 @Composable
-fun AetherNavGraph() {
+fun AetherNavGraph(
+    darkTheme: Boolean,
+    onThemeToggle: () -> Unit
+){
 
     val navController = rememberNavController()
 
@@ -79,9 +82,9 @@ fun AetherNavGraph() {
         ) {
 
             HomeScreen(
-
+                darkTheme = darkTheme,
+                onThemeToggle = onThemeToggle,
                 onEditProfileClick = {
-
                     navController.navigate(
                         AetherDestination.EditProfile.route
                     )

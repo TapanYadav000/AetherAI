@@ -1,11 +1,15 @@
 package com.tapan.aetherai.presentation.profile
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.tapan.aetherai.ui.theme.SuccessGreen
 
 @Composable
 fun EditProfileScreen(
@@ -24,11 +28,18 @@ fun EditProfileScreen(
 
         return
     }
-
+    Surface(
+        modifier = Modifier.fillMaxSize().windowInsetsPadding(
+            WindowInsets.statusBars
+        ),
+        color = MaterialTheme.colorScheme.background
+    ){
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp)
+            .padding(24.dp).windowInsetsPadding(
+                WindowInsets.statusBars
+            )
     ) {
 
         Text(
@@ -73,14 +84,43 @@ fun EditProfileScreen(
             Text("Save")
         }
 
-        if (state.isSaved) {
+        AnimatedVisibility(
+            visible = state.isSaved
+        ) {
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor =
+                        MaterialTheme.colorScheme.surfaceVariant
+                )
+            ) {
 
-            Text(
-                text = "✓ Profile Updated Successfully",
-                color = MaterialTheme.colorScheme.primary
-            )
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    Text(
+                        text = "✓",
+                        color = SuccessGreen,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+
+                    Spacer(
+                        modifier = Modifier.width(12.dp)
+                    )
+
+                    Text(
+                        text = "Profile Updated Successfully",
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            }
         }
+    }
     }
 }

@@ -12,7 +12,7 @@ import com.tapan.aetherai.presentation.onboarding.page.*
 @Composable
 fun OnboardingScreen(
     onNavigateToHome: () -> Unit
-){
+) {
 
     var isUserInfoValid by remember {
         mutableStateOf(false)
@@ -25,44 +25,70 @@ fun OnboardingScreen(
     val state by viewModel.state.collectAsState()
 
 
-    Column(
-        modifier = Modifier.fillMaxSize()
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
     ) {
 
-        Box(
-            modifier = Modifier.weight(1f)
+        Column(
+            modifier = Modifier.fillMaxSize()
         ) {
 
-            when (state.currentPage) {
+            LinearProgressIndicator(
+                progress = {
+                    (state.currentPage + 1) / 3f
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
 
-                0 -> WelcomePage()
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
 
-                1 -> UserInfoPage(
-                    state = state,
-                    viewModel = viewModel,
-                    onValidationChanged = {
-                        isUserInfoValid = it
-                    }
-                )
 
-                2 -> TraitSelectionPage(
-                    state = state,
-                    viewModel = viewModel,
-                    onValidationChanged = {
-                        isTraitSelectionValid = it
-                    }
-                )
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 24.dp)
+            ) {
+
+                when (state.currentPage) {
+
+                    0 -> WelcomePage()
+
+                    1 -> UserInfoPage(
+                        state = state,
+                        viewModel = viewModel,
+                        onValidationChanged = {
+                            isUserInfoValid = it
+                        }
+                    )
+
+                    2 -> TraitSelectionPage(
+                        state = state,
+                        viewModel = viewModel,
+                        onValidationChanged = {
+                            isTraitSelectionValid = it
+                        }
+                    )
+                }
+
             }
-
             Button(
                 onClick = {
 
-                    if(state.currentPage < 2) {
+                    if (state.currentPage < 2) {
                         viewModel.nextPage()
                     } else {
                         viewModel.finishOnboarding()
                     }
                 },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        horizontal = 24.dp,
+                        vertical = 24.dp
+                    ),
                 enabled = when (state.currentPage) {
 
                     0 -> true
@@ -74,25 +100,22 @@ fun OnboardingScreen(
                     else -> false
                 }
             ) {
-                Text(
-                    text = if (state.currentPage == 2)
-                        "Finish"
-                    else
-                        "Next"
-                )
-            }
-            if(state.isCompleted) {
 
                 Text(
-                    text = "Profile Saved Successfully"
+                    text =
+                        if (state.currentPage == 2)
+                            "Finish"
+                        else
+                            "Continue"
                 )
             }
         }
-    }
-    LaunchedEffect(state.isCompleted) {
 
-        if (state.isCompleted) {
-            onNavigateToHome()
+        LaunchedEffect(state.isCompleted) {
+
+            if (state.isCompleted) {
+                onNavigateToHome()
+            }
         }
     }
 }
